@@ -64,7 +64,6 @@ jobs:
       - name: "Rename main.pdf"
         run: mv ${{ needs.build.outputs.filename }}.pdf ${{ steps.filename.outputs.FILENAME }}
 
-      
       - name: "Release"
         uses: softprops/action-gh-release@v1
         with:
