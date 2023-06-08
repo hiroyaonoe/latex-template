@@ -31,7 +31,7 @@ jobs:
       - name: "Set filename"
         id: filename
         run: |
-          FILENAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}-main-$(git rev-parse --short ${{ github.sha }}).pdf
+          FILENAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}_main_$(git rev-parse --short ${{ github.sha }}).pdf
           echo ::set-output name=FILENAME::${FILENAME}
 
       - name: "Upload artifact main.pdf"
@@ -47,19 +47,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: "Set filename"
-        id: filename
+      - name: "Set filepath"
+        id: filepath
         run: |
-          FILENAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}-main-${GITHUB_REF/refs\/tags\//}.pdf
-          echo ::set-output name=FILENAME::${FILENAME}
+          FILENAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}_main_${GITHUB_REF/refs\/tags\//}.pdf
+          echo ::set-output name=FILEPATH::~/${FILENAME}
 
       - name: "Download artifact main.pdf"
         uses: actions/download-artifact@v3
         with:
           name: ${{ needs.build.outputs.filename }}
-          path: ${{ steps.filename.outputs.FILENAME }}
+          path: ${{ steps.filepath.outputs.FILEPATH }}
       
       - name: "Release"
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ steps.filename.outputs.FILENAME }}
+          files: ${{ steps.filepath.outputs.FILEPATH }}
