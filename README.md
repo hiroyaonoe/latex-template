@@ -2,7 +2,6 @@
 This repository is a template for writing and building documents with LaTeX.
 
 ## Usage
-### writing
 Please write documents in `main.tex`.
 If you want to use bibtex, you can write references in `main.bib`.
 
