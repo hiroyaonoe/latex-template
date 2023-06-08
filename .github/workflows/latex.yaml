@@ -47,19 +47,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: "Set filename"
+        id: filename
+        run: |
+          FILENAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}-main-${GITHUB_REF/refs\/tags\//}.pdf
+          echo ::set-output name=FILENAME::${FILENAME}
+
       - name: "Download artifact main.pdf"
         uses: actions/download-artifact@v3
         with:
           name: ${{ needs.build.outputs.filename }}
-
-      - name: "Rename main.pdf"
-        id: rename
-        run: |
-          NEW_FILENAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}-main-${GITHUB_REF/refs\/tags\//}.pdf
-          mv ${{ needs.build.outputs.filename }} ${NEW_FILENAME}
-          echo ::set-output name=FILENAME::${NEW_FILENAME}
+          path: ${{ steps.filename.outputs.FILENAME }}
       
       - name: "Release"
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ steps.rename.outputs.FILENAME }}
+          files: ${{ steps.filename.outputs.FILENAME }}
