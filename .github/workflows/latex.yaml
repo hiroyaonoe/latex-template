@@ -60,13 +60,16 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ needs.build.outputs.filename }}
-          path: ${{ steps.filename.outputs.FILENAME }}
 
-      - name: "Debug"
+      - name: "Rename main.pdf"
         run: |
           pwd
           ls -al
           ls -al ${{ steps.filename.outputs.FILENAME }}
+          mv ${{ needs.build.outputs.filename }}.pdf ${{ steps.filename.outputs.FILENAME }}
+          ls -al
+          ls -al ${{ steps.filename.outputs.FILENAME }}
+
       
       - name: "Release"
         uses: softprops/action-gh-release@v1
