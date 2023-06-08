@@ -5,6 +5,8 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      filename: ${{ steps.filename.outputs.FILENAME }}
     steps:
       - uses: actions/checkout@v2
 
@@ -48,14 +50,13 @@ jobs:
       - name: "Download artifact main.pdf"
         uses: actions/download-artifact@v3
         with:
-          name: bthesis-onoe_main
+          name: ${{ needs.build.outputs.filename }}
 
       - name: "Rename main.pdf"
         id: rename
         run: |
-          REPO=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}
-          NEW_FILENAME=${REPO}-main-${GITHUB_REF/refs\/tags\//}.pdf
-          mv main.pdf ${NEW_FILENAME}
+          NEW_FILENAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}-main-${GITHUB_REF/refs\/tags\//}.pdf
+          mv ${{ needs.build.outputs.filename }} ${NEW_FILENAME}
           echo ::set-output name=FILENAME::${NEW_FILENAME}
       
       - name: "Release"
