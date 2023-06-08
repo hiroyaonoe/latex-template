@@ -62,11 +62,7 @@ jobs:
           name: ${{ needs.build.outputs.filename }}
 
       - name: "Rename main.pdf"
-        run: |
-          pwd
-          ls -al
-          mv ${{ needs.build.outputs.filename }}.pdf ${{ steps.filename.outputs.FILENAME }}
-          ls -al
+        run: mv ${{ needs.build.outputs.filename }}.pdf ${{ steps.filename.outputs.FILENAME }}
 
       
       - name: "Release"
