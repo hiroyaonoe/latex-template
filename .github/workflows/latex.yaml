@@ -26,15 +26,19 @@ jobs:
         if: failure() && steps.latexmk.outcome == 'failure'
         run: cat main.log
 
-      - name: "Get short git commit SHA"
-        id: sha
-        run: echo "::set-output name=short_sha::$(git rev-parse --short ${{ github.sha }})"
+      - name: "Rename main.pdf"
+        id: rename
+        run: |
+          OLD_FILENAME=main.pdf
+          NEW_FILENAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}-main-$(git rev-parse --short ${{ github.sha }}).pdf
+          mv ${OLD_FILENAME} ${NEW_FILENAME}
+          echo ::set-output name=FILENAME::${NEW_FILENAME}
 
       - name: "Upload artifact main.pdf"
         uses: actions/upload-artifact@v2
         with:
           name: main-pdf
-          path: ${{ github.repository }}-main-${{ steps.sha.outputs.short_sha }}.pdf
+          path: ${{ steps.rename.outputs.FILENAME }}
   
   release:
     runs-on: ubuntu-latest
@@ -51,8 +55,9 @@ jobs:
       - name: "Rename main.pdf"
         id: rename
         run: |
-          OLD_FILENAME=${{ github.repository }}-main-${{ steps.sha.outputs.short_sha }}.pdf
-          NEW_FILENAME=${{ github.repository }}-main-${GITHUB_REF/refs\/tags\//}.pdf
+          REPO=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}
+          OLD_FILENAME=${REPO}-main-$(git rev-parse --short ${{ github.sha }}).pdf
+          NEW_FILENAME=${REPO}-main-${GITHUB_REF/refs\/tags\//}.pdf
           mv ${OLD_FILENAME} ${NEW_FILENAME}
           echo ::set-output name=FILENAME::${NEW_FILENAME}
       
