@@ -34,11 +34,14 @@ jobs:
           FILENAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}_main_$(git rev-parse --short ${{ github.sha }}) # This is directory path
           echo ::set-output name=FILENAME::${FILENAME}
 
+      - name: "Rename main.pdf"
+        run: mv main.pdf ${{ steps.filename.outputs.FILENAME }}.pdf
+
       - name: "Upload artifact main.pdf"
         uses: actions/upload-artifact@v2
         with:
           name: ${{ steps.filename.outputs.FILENAME }}
-          path: main.pdf
+          path: ${{ steps.filename.outputs.FILENAME }}.pdf
   
   release:
     runs-on: ubuntu-latest
@@ -51,7 +54,7 @@ jobs:
         id: filename
         run: |
           FILENAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}_main_${GITHUB_REF/refs\/tags\//}.pdf
-          echo ::set-output name=FILENAME::~/${FILENAME}
+          echo ::set-output name=FILENAME::${FILENAME}
 
       - name: "Download artifact main.pdf"
         uses: actions/download-artifact@v3
