@@ -65,10 +65,8 @@ jobs:
         run: |
           pwd
           ls -al
-          ls -al ${{ steps.filename.outputs.FILENAME }}
           mv ${{ needs.build.outputs.filename }}.pdf ${{ steps.filename.outputs.FILENAME }}
           ls -al
-          ls -al ${{ steps.filename.outputs.FILENAME }}
 
       
       - name: "Release"
