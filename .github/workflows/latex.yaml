@@ -44,12 +44,12 @@ jobs:
           if git branch -a | grep -q "remotes/origin/main-pdf"; then
             git checkout -t origin/main-pdf
           else
-            git checkout -b main-pdf
+            git checkout --orphan main-pdf
             git commit --allow-empty -m "first commit"
           fi
           git add main.pdf
           git commit -m "main.pdf: ${{ github.sha }}"
-          git push origin
+          git push origin main-pdf
 
       - name: "Rename main.pdf"
         run: mv main.pdf ${{ steps.filename.outputs.FILENAME }}.pdf
