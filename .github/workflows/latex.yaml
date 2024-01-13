@@ -45,7 +45,6 @@ jobs:
             git checkout -t origin/main-pdf
           else
             git checkout --orphan main-pdf
-            git commit --allow-empty -m "first commit"
           fi
           git add main.pdf
           git commit -m "main.pdf: ${{ github.sha }}"
