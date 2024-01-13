@@ -31,8 +31,23 @@ jobs:
       - name: "Set filename"
         id: filename
         run: |
-          FILENAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}_main_$(git rev-parse --short ${{ github.sha }}) # This is directory path
-          echo ::set-output name=FILENAME::${FILENAME}
+          COMMIT_HASH=$(git rev-parse --short ${{ github.sha }})
+          FILENAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}_main_${COMMIT_HASH}
+
+          echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
+
+      - name: "Commit and Push main.pdf"
+        run: |
+          git fetch
+          if git branch -a | grep -q "remotes/origin/main-pdf"; then
+            git checkout -t origin/main-pdf
+          else
+            git checkout main-pdf
+            git commit --allow-empty -m "first commit"
+          fi
+          git add main.pdf
+          git commit -m "main.pdf: ${{ github.sha }}"
+          git push origin
 
       - name: "Rename main.pdf"
         run: mv main.pdf ${{ steps.filename.outputs.FILENAME }}.pdf
@@ -54,7 +69,7 @@ jobs:
         id: filename
         run: |
           FILENAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}_main_${GITHUB_REF/refs\/tags\//}.pdf
-          echo ::set-output name=FILENAME::${FILENAME}
+          echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
 
       - name: "Download artifact main.pdf"
         uses: actions/download-artifact@v3
