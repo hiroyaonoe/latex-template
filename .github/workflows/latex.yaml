@@ -42,7 +42,7 @@ jobs:
           if git branch -a | grep -q "remotes/origin/main-pdf"; then
             git checkout -t origin/main-pdf
           else
-            git checkout main-pdf
+            git checkout -b main-pdf
             git commit --allow-empty -m "first commit"
           fi
           git add main.pdf
