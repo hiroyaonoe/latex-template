@@ -38,6 +38,7 @@ jobs:
 
       - name: "Commit and Push main.pdf"
         run: |
+          mv main.pdf main_tmp.pdf
           git config user.name "$(git --no-pager log --format=format:'%an' -n 1)"
           git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
           git fetch
@@ -47,6 +48,7 @@ jobs:
             git checkout --orphan main-pdf
             git rm --cached -r .
           fi
+          mv main_tmp.pdf main.pdf
           git add -f main.pdf
           git commit -m "main.pdf: ${{ github.sha }}"
           git push origin main-pdf
