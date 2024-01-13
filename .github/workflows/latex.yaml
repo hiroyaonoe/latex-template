@@ -46,7 +46,7 @@ jobs:
           else
             git checkout --orphan main-pdf
           fi
-          git add main.pdf
+          git add -f main.pdf
           git commit -m "main.pdf: ${{ github.sha }}"
           git push origin main-pdf
 
