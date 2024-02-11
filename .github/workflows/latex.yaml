@@ -36,23 +36,6 @@ jobs:
 
           echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
 
-      - name: "Commit and Push main.pdf"
-        run: |
-          mv main.pdf main_tmp.pdf
-          git config user.name "$(git --no-pager log --format=format:'%an' -n 1)"
-          git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
-          git fetch
-          if git branch -a | grep -q "remotes/origin/main-pdf"; then
-            git checkout -t origin/main-pdf
-          else
-            git checkout --orphan main-pdf
-            git rm --cached -r .
-          fi
-          mv main_tmp.pdf main.pdf
-          git add -f main.pdf
-          git commit -m "main.pdf: ${{ github.sha }}"
-          git push origin main-pdf
-
       - name: "Rename main.pdf"
         run: mv main.pdf ${{ steps.filename.outputs.FILENAME }}.pdf
 
@@ -61,7 +44,7 @@ jobs:
         with:
           name: ${{ steps.filename.outputs.FILENAME }}
           path: ${{ steps.filename.outputs.FILENAME }}.pdf
-  
+
   release:
     runs-on: ubuntu-latest
     needs: build
@@ -87,3 +70,34 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ steps.filename.outputs.FILENAME }}
+  
+  commit:
+    runs-on: ubuntu-latest
+    needs: build
+    if: "!startsWith(github.ref, 'refs/tags/')"
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: "Download artifact main.pdf"
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.build.outputs.filename }}
+
+      - name: "Rename main.pdf"
+        run: mv ${{ needs.build.outputs.filename }}.pdf main_tmp.pdf
+
+      - name: "Commit and Push main.pdf"
+        run: |
+          git config user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+          git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+          git fetch
+          if git branch -a | grep -q "remotes/origin/main-pdf"; then
+            git checkout -f -t origin/main-pdf
+          else
+            git checkout -f --orphan main-pdf
+            git rm --cached -r .
+          fi
+          mv main_tmp.pdf main.pdf
+          git add -f main.pdf
+          git commit -m "main.pdf: ${{ github.sha }}"
+          git push origin main-pdf
