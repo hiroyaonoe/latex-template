@@ -42,7 +42,7 @@ jobs:
         run: mv main.pdf ${{ steps.filename.outputs.FILENAME }}.pdf
 
       - name: "Upload artifact main.pdf"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.filename.outputs.FILENAME }}
           path: ${{ steps.filename.outputs.FILENAME }}.pdf
@@ -61,7 +61,7 @@ jobs:
           echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
 
       - name: "Download artifact main.pdf"
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ needs.build.outputs.filename }}
 
@@ -81,7 +81,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: "Download artifact main.pdf"
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ needs.build.outputs.filename }}
 
