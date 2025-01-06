@@ -5,17 +5,23 @@ This repository is a template for writing and building documents with LaTeX.
 Please write documents in `main.tex`.
 If you want to use bibtex, you can write references in `main.bib`.
 
+### images
+You can use draw.io to create images.
+First, please install draw.io desktop app from [here](https://github.com/jgraph/drawio-desktop/releases).  
+Next, please update `DRAWIO` in `Makefile` to the path of draw.io desktop app.  
+You can create `images/<name>.drawio.png` and run `make images` to generate `images/<name>.pdf`.
+
 ### latexdiff
 You can check diff with latexdiff.
 
 When you run below command, `main-diff.pdf` will be built.
 ```
-./script/latexdiff.sh <commit hash (HEAD if you do not specify it)>
+make main-diff.pdf <commit hash (HEAD if you do not specify it)>
 ```
 
 ## Outputs
 ### local
-You can see `main.pdf` by running command `latexmk`.
+You can see `main.pdf` by running command `make`.
 
 ### remote
 This repository builds PDF with GitHub Action and [container-texlive](https://github.com/hiroyaonoe/container-texlive).

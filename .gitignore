@@ -301,4 +301,5 @@ TSWLatexianTemp*
 #*Notes.bib
 
 *.pdf
+!images/**/*.pdf
 main-diff.tex

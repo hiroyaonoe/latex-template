@@ -1,5 +1,7 @@
 \documentclass[a4paper,11pt,uplatex,dvipdfmx]{article}
 
+\usepackage{graphicx}
+
 \begin{document}
 
 \title{LaTeX Template}
@@ -8,6 +10,13 @@
 \maketitle
 
 This repository is a template for writing and building documents with LaTeX. Please see README.md\cite{latex-template} for the usage.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[keepaspectratio, width=\hsize]{images/example.pdf}
+	\caption{example image}
+	\label{fig: example}
+\end{figure}
 
 \bibliography{main}
 \bibliographystyle{unsrt}
